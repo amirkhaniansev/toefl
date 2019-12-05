@@ -1,13 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Toefl.TextProcessor.Models;
+using PuppeteerSharp;
+using System.Text;
 
 namespace Toefl.TextProcessor.Service
 {
     public class GoogleTranslator : ITranslator
     {
         private readonly IHtmlParser parser;
+        private readonly BrowserFetcher browserFetcher;
+        private readonly NavigationOptions navigationOptions;
         private readonly string url;
+
+        private RevisionInfo revisionInfo;
+        private LaunchOptions launchOptions;
+        private Browser browser;
+        private bool disposed;
 
         public GoogleTranslator(IHtmlParser parser, string url)
         {
@@ -19,16 +28,61 @@ namespace Toefl.TextProcessor.Service
 
             this.parser = parser;
             this.url = url;
+            this.browserFetcher = new BrowserFetcher();
+            this.navigationOptions = new NavigationOptions
+            {
+                WaitUntil = new []
+                {
+                    WaitUntilNavigation.Networkidle0,
+                    WaitUntilNavigation.Networkidle2
+                }
+            };
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            this.Dispose(true);
         }
 
-        public Task<TranslationResult> TranslateAsync(string expression)
+        public async Task<TranslationResult> TranslateAsync(string expression)
         {
-            throw new NotImplementedException();
+            if (this.revisionInfo == null)
+                this.revisionInfo = await this.browserFetcher.DownloadAsync(BrowserFetcher.DefaultRevision);
+
+            if (this.launchOptions == null)
+                this.launchOptions = new LaunchOptions();
+
+            if (this.browser == null)
+                this.browser = await Puppeteer.LaunchAsync(this.launchOptions);
+
+            var page = await this.browser.NewPageAsync();
+            var finalUrl = new StringBuilder()
+                    .Append(this.url)
+                    .Append("&text=")
+                    .Append(expression)
+                    .ToString();
+
+            var response = await page.GoToAsync(finalUrl, this.navigationOptions);
+            var jsHandle = await page.WaitForSelectorAsync(".result-shield-container");
+            if (!response.Ok)
+                throw new Exception();
+
+            var content = await page.GetContentAsync();
+
+            return this.parser.Parse(content);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (this.disposed)
+                return;
+
+            if(disposing)
+            {
+                this.browser.Dispose();
+            }
+
+            this.disposed = true;
         }
     }
 }
