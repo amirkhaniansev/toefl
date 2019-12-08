@@ -1,10 +1,6 @@
-﻿using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Toefl.TextProcessor.Models;
+using HtmlAgilityPack;
 
 namespace Toefl.TextProcessor.Service
 {
@@ -15,11 +11,27 @@ namespace Toefl.TextProcessor.Service
             var document = new HtmlDocument();
             document.LoadHtml(html);
 
-            var node = document.DocumentNode.Descendants()
-                .Where(n => n.HasClass("tlid - translation translation"))
+            var result = new TranslationResult();
+            
+            var translationNode = document.DocumentNode.Descendants()
+                .Where(n => n.Name == "span" && n.HasClass("tlid-translation"))
                 .FirstOrDefault();
+            if (translationNode != null)
+                result.MainTranslation = translationNode.InnerText;
 
-            return new TranslationResult();
+            var explanationNode = document.DocumentNode.Descendants()
+                .Where(n => n.Name == "div" && n.HasClass("gt-def-row"))
+                .FirstOrDefault();
+            if (explanationNode != null)
+                result.Explanation = explanationNode.InnerText;
+
+            var synonymNodes = document.DocumentNode.Descendants()
+                .Where(n => n.Name == "span" && n.HasClass("gt-cd-cl"))
+                .ToList();
+            if (synonymNodes != null && synonymNodes.Count > 0)
+                result.Synonyms = synonymNodes.Select(n => n.InnerText).Distinct().ToList();
+
+            return result;
         }
     }
 }

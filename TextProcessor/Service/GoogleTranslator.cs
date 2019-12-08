@@ -69,7 +69,12 @@ namespace Toefl.TextProcessor.Service
 
             var content = await page.GetContentAsync();
 
-            return this.parser.Parse(content);
+            await page.CloseAsync();
+
+            var result = this.parser.Parse(content);
+            result.Expression = expression;
+
+            return result;
         }
 
         private void Dispose(bool disposing)

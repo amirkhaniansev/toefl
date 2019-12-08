@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BB7F10B5-6C37-47E9-A345-AF43D891CACC}</ProjectGuid>
+    <ProjectGuid>{3A8C067A-6B08-4CCD-8F5F-4AD9BAB91FB9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Toefl.TextProcessor</RootNamespace>
+    <RootNamespace>Toefl.viceTextProcessor</RootNamespace>
     <AssemblyName>TextProcessor</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -119,10 +118,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\TranslationResult.cs" />
-    <Compile Include="Service\GoogleTranslator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\GoogleParser.cs" />
+    <Compile Include="Service\GoogleTranslator.cs" />
     <Compile Include="Service\IHtmlParser.cs" />
     <Compile Include="Service\ITranslator.cs" />
   </ItemGroup>
