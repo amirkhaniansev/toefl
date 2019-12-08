@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Toefl.TextProcessor.Models;
 using PuppeteerSharp;
-using System.Text;
 
 namespace Toefl.TextProcessor.Service
 {
