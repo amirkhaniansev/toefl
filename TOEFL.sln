@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextProcessor", "TextProces
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{95D69751-32D7-409C-867D-EADF10444FEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DetectionTest", "DetectionTest\DetectionTest.csproj", "{CEEFD0A1-AF2D-4E1E-A0CE-B421204601C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{95D69751-32D7-409C-867D-EADF10444FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95D69751-32D7-409C-867D-EADF10444FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95D69751-32D7-409C-867D-EADF10444FEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEEFD0A1-AF2D-4E1E-A0CE-B421204601C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEEFD0A1-AF2D-4E1E-A0CE-B421204601C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEEFD0A1-AF2D-4E1E-A0CE-B421204601C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEEFD0A1-AF2D-4E1E-A0CE-B421204601C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

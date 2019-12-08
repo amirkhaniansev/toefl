@@ -66,7 +66,7 @@ namespace Toefl.TextProcessor.Service
             var jsHandle = await page.WaitForSelectorAsync(".result-shield-container");
             if (!response.Ok)
                 throw new Exception();
-
+           
             var content = await page.GetContentAsync();
 
             await page.CloseAsync();
