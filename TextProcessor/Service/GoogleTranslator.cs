@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Toefl.TextProcessor.Models;
 using PuppeteerSharp;
+using PuppeteerSharp.Input;
 
 namespace Toefl.TextProcessor.Service
 {
@@ -16,6 +17,7 @@ namespace Toefl.TextProcessor.Service
         private RevisionInfo revisionInfo;
         private LaunchOptions launchOptions;
         private Browser browser;
+        private Page page;
         private bool disposed;
 
         public GoogleTranslator(IHtmlParser parser, string url)
@@ -55,21 +57,22 @@ namespace Toefl.TextProcessor.Service
             if (this.browser == null)
                 this.browser = await Puppeteer.LaunchAsync(this.launchOptions);
 
-            var page = await this.browser.NewPageAsync();
-            var finalUrl = new StringBuilder()
-                    .Append(this.url)
-                    .Append("&text=")
-                    .Append(expression)
-                    .ToString();
+            if (this.page == null)
+            {
+                this.page = await this.browser.NewPageAsync();
+                var response = await this.page.GoToAsync(this.url, this.navigationOptions);
+                if (!response.Ok)
+                    throw new Exception();
+            }
 
-            var response = await page.GoToAsync(finalUrl, this.navigationOptions);
+            await this.page.Keyboard.DownAsync("Control");
+            await this.page.Keyboard.PressAsync("KeyA");
+            await this.page.Keyboard.UpAsync("Control");
+            await this.page.Keyboard.DownAsync("Backspace");
+            await this.page.TypeAsync("textarea[id=source]", expression);
+            
             var jsHandle = await page.WaitForSelectorAsync(".result-shield-container");
-            if (!response.Ok)
-                throw new Exception();
-           
-            var content = await page.GetContentAsync();
-
-            await page.CloseAsync();
+            var content = await this.page.GetContentAsync();
 
             var result = this.parser.Parse(content);
             result.Expression = expression;
@@ -82,9 +85,13 @@ namespace Toefl.TextProcessor.Service
             if (this.disposed)
                 return;
 
-            if(disposing && this.browser != null)
+            if(disposing)
             {
-                this.browser.Dispose();
+                if (this.page != null)
+                    this.page.Dispose();
+
+                if (this.browser != null)
+                    this.browser.Dispose();
             }
 
             this.disposed = true;
