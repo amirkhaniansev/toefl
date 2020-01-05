@@ -11,5 +11,13 @@ namespace Toefl.TextProcessor.Models
         public string MainTranslation { get; set; }
 
         public List<string> Synonyms { get; set; }
+
+        public TranslationResult()
+        {
+            this.Expression = string.Empty;
+            this.Explanation = string.Empty;
+            this.MainTranslation = string.Empty;
+            this.Synonyms = new List<string>();
+        }
     }
 }
