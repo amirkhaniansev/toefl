@@ -7,7 +7,7 @@
     <ProjectGuid>{3A8C067A-6B08-4CCD-8F5F-4AD9BAB91FB9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Toefl.viceTextProcessor</RootNamespace>
+    <RootNamespace>Toefl.TextProcessor</RootNamespace>
     <AssemblyName>TextProcessor</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
