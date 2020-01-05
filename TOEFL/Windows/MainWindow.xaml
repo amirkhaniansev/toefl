@@ -3,9 +3,153 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:local="clr-namespace:Toefl.ToeflDesktopUI.Windows"
         mc:Ignorable="d"
-        Title="TOEFL" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="TOEFL" 
+        Height="450" 
+        Width="800">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding CloseCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0"
+                Margin="25"
+                CornerRadius="10"
+                BorderBrush="LightGray"
+                BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Separator Grid.Column="1" 
+                           Width="2"
+                           BorderBrush="LightGray"
+                           Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                    <TextBox Grid.Column="0"
+                         Margin="5"
+                         BorderBrush="Transparent"
+                         BorderThickness="0"
+                         FontSize="25"
+                         Text="{Binding Input, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding TranslateCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <TextBlock Grid.Column="2"
+                           Margin="5"
+                           FontSize="25"
+                           Text="{Binding Translation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </Border>
+            <StackPanel Grid.Row="1" Margin="25, 0, 25, 0" Orientation="Vertical">
+                <TextBlock Text="Explanation"
+                       FontSize="20"
+                       FontWeight="Light"/>
+                <TextBlock Text="{Binding Explanation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       FontSize="18"
+                       FontStyle="Italic"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Margin="25, 0, 25, 0" Orientation="Vertical">
+                <TextBlock Text="Synonyms"
+                       FontSize="20"
+                       FontWeight="Light"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding Synonyms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="LightGray"
+                                        BorderThickness="2"
+                                        CornerRadius="10"
+                                        Margin="5, 5, 5, 0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding}"
+                                               FontSize="18"
+                                               FontStyle="Italic"/>
+                                        <Button Command="{Binding DataContext.RemoveSynonymCommand, RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}}"
+                                                CommandParameter="{Binding}"
+                                                Background="Transparent"
+                                                BorderThickness="0">
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                            <fa:ImageAwesome Icon="Close"
+                                                             Width="15"
+                                                             Height="15"
+                                                             Foreground="LightGray"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </StackPanel>
+            <StackPanel Grid.Row="3"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button Background="Transparent"
+                        BorderThickness="0"
+                        Height="60">
+                    <fa:ImageAwesome Height="60"
+                                     Width="60"
+                                     Icon="Refresh"
+                                     Foreground="Gray"/>
+                </Button>
+                <Button Background="Transparent"
+                        BorderThickness="0"
+                        Margin="50, 0, 0, 0"
+                        Height="60"> 
+                    <fa:ImageAwesome Height="60"
+                                     Width="60"
+                                     Icon="FolderOpen" 
+                                     Foreground="Gray"/>
+                </Button>
+                <Button Background="Transparent"
+                        BorderThickness="0"
+                        Margin="50, 0, 0, 0"
+                        Height="60">
+                    <fa:ImageAwesome Height="60"
+                                     Width="60"
+                                     Icon="Save"
+                                     Foreground="Gray"/>
+                </Button>
+                <Button Background="Transparent"
+                        BorderThickness="0"
+                        Margin="50, 0, 0, 0"
+                        Height="60">
+                    <fa:ImageAwesome Height="60"
+                                     Width="60"
+                                     Icon="Send"
+                                     Foreground="Gray"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </Window>

@@ -82,7 +82,7 @@ namespace Toefl.TextProcessor.Service
             if (this.disposed)
                 return;
 
-            if(disposing)
+            if(disposing && this.browser != null)
             {
                 this.browser.Dispose();
             }
