@@ -10,7 +10,7 @@ namespace Toefl.TextProcessor.Service
         {
             var document = new HtmlDocument();
             document.LoadHtml(html);
-
+            
             var result = new TranslationResult();
             
             var translationNode = document.DocumentNode.Descendants()

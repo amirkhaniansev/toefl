@@ -16,7 +16,7 @@ namespace ConsoleTest
         {
             var parser = new GoogleParser();
             var url = "https://translate.google.com/#view=home&op=translate&sl=en&tl=hy";
-            using (var translator = new GoogleTranslator(parser, url))
+            using (var translator = new GooglePuppeteerTranslator(parser, url))
             {
                 while(true)
                 {

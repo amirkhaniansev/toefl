@@ -64,7 +64,7 @@ namespace Toefl.ToeflDesktopUI.ViewModels
         public MainViewModel()
         {
             this.translationResults = new ObservableCollection<TranslationResult>();
-            this.translator = new GoogleTranslator(new GoogleParser(), ConfigurationManager.AppSettings["url"]);
+            this.translator = new GooglePuppeteerTranslator(new GoogleParser(), ConfigurationManager.AppSettings["url"]);
 
             this.CloseCommand = new RelayCommand(this.Close);
             this.TranslateCommand = new RelayCommand(this.Translate, this.CanTranslate);
