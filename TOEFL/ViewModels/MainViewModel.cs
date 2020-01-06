@@ -1,12 +1,14 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Windows;
 using System.Windows.Input;
 using System.Configuration;
-using System.Linq;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.CommandWpf;
 using Toefl.TextProcessor.Service;
 using Toefl.TextProcessor.Models;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace Toefl.ToeflDesktopUI.ViewModels
 {
@@ -20,7 +22,7 @@ namespace Toefl.ToeflDesktopUI.ViewModels
         private ObservableCollection<string> synonyms;
         private ObservableCollection<TranslationResult> translationResults;
 
-        private bool isTranslating;
+        private bool isBusy;
 
         public string Input
         {
@@ -60,6 +62,7 @@ namespace Toefl.ToeflDesktopUI.ViewModels
         public ICommand CloseCommand { get; }
         public ICommand TranslateCommand { get; }
         public ICommand RemoveSynonymCommand { get; }
+        public ICommand SaveCommand { get; }
 
         public MainViewModel()
         {
@@ -68,6 +71,7 @@ namespace Toefl.ToeflDesktopUI.ViewModels
 
             this.CloseCommand = new RelayCommand(this.Close);
             this.TranslateCommand = new RelayCommand(this.Translate, this.CanTranslate);
+            this.SaveCommand = new RelayCommand(this.Save, this.CanSave);
             this.RemoveSynonymCommand = new RelayCommand<string>(this.RemoveSynonym, this.CanRemoveSynonym);
         }
 
@@ -80,7 +84,7 @@ namespace Toefl.ToeflDesktopUI.ViewModels
         {
             try
             {
-                this.isTranslating = true;
+                this.isBusy = true;
                 var result = await this.translator.TranslateAsync(this.input);
                 if (result == null)
                     return;
@@ -93,17 +97,54 @@ namespace Toefl.ToeflDesktopUI.ViewModels
             }
             catch
             {
-                MessageBox.Show("Unable to translate. Sorry for inconvenience");
+                MessageBox.Show("Unable to translate. Sorry for inconvenience.");
             }
             finally
             {
-                this.isTranslating = false;
+                this.isBusy = false;
+            }
+        }
+
+        private async void Save()
+        {
+            try
+            {
+                this.isBusy = true;
+                var dlg = new SaveFileDialog();
+                dlg.FileName = DateTime.Now.ToString();
+                dlg.DefaultExt = ".json";
+                dlg.Filter = "Text documents (.json)|*.json";
+
+                var result = dlg.ShowDialog();
+                if (!result.GetValueOrDefault(false))
+                    return;
+
+                var path = dlg.FileName;
+                var content = JsonConvert.SerializeObject(this.translationResults, Formatting.Indented);
+                using (var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                using (var writer = new StreamWriter(stream))
+                {
+                    await writer.WriteAsync(content);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Unable to save file. Sorry for inconvenience.");
+            }
+            finally
+            {
+                this.isBusy = false;
             }
         }
 
         private void RemoveSynonym(string synonym)
         {
             this.synonyms.Remove(synonym);
+        }
+
+        private bool CanSave()
+        {
+            return !this.isBusy && this.translationResults.Count != 0;
         }
 
         private bool CanRemoveSynonym(string synonym)
@@ -113,7 +154,7 @@ namespace Toefl.ToeflDesktopUI.ViewModels
         
         private bool CanTranslate()
         {
-            return !this.isTranslating && !string.IsNullOrEmpty(this.input);
+            return !this.isBusy && !string.IsNullOrEmpty(this.input);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
-using Toefl.TextProcessor.Models;
 using PuppeteerSharp;
 
 namespace Toefl.TextProcessor.Service
@@ -40,21 +40,21 @@ namespace Toefl.TextProcessor.Service
                 this.browser = await Puppeteer.LaunchAsync(this.launchOptions);
 
             if (this.page == null)
-            {
                 this.page = await this.browser.NewPageAsync();
-                var response = await this.page.GoToAsync(this.url, this.navigationOptions);
-                if (!response.Ok)
-                    throw new Exception();
-            }
 
-            await this.page.Keyboard.DownAsync("Control");
-            await this.page.Keyboard.PressAsync("KeyA");
-            await this.page.Keyboard.UpAsync("Control");
-            await this.page.Keyboard.DownAsync("Backspace");
-            await this.page.TypeAsync("textarea[id=source]", expression);
-            
-            var jsHandle = await page.WaitForSelectorAsync(".result-shield-container");
+            var finalUrl = new StringBuilder()
+                    .Append(this.url)
+                    .Append("&text=")
+                    .Append(expression)
+                    .ToString();
+
+            var response = await this.page.GoToAsync(finalUrl, this.navigationOptions);
+            if (!response.Ok)
+                throw new Exception();
+
+            var jsHandle = await this.page.WaitForSelectorAsync(".result-shield-container");            
             var content  = await this.page.GetContentAsync();
+            var back = await this.page.GoBackAsync();
 
             return content;
         }
